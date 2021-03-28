@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +35,13 @@ public class CategoryController {
 	private CategoryService categoryService;
 	
 	@GetMapping
+	@Cacheable(value = "listCategories")
 	public List<CategoryDto> index() {
 		return categoryService.listAll();
 	}
 	
 	@PostMapping
+	@CacheEvict(value = "listCategories")
 	public ResponseEntity<CategoryDto> store(@RequestBody @Valid CategoryForm form, UriComponentsBuilder uriBuilder) {
 		Category category = categoryService.create(form);
 		
@@ -58,6 +62,7 @@ public class CategoryController {
 	
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "listCategories")
 	public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody @Valid CategoryForm form) {
 		Optional<Category> categoryOptional = categoryService.getCategory(id);
 		if (categoryOptional.isPresent()) {
@@ -69,6 +74,7 @@ public class CategoryController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@CacheEvict(value = "listCategories")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Optional<Category> category = categoryService.getCategory(id);
 		if (category.isPresent()) {
