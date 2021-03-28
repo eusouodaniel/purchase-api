@@ -1,12 +1,16 @@
 package com.challenge.purchase.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +19,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 public class User implements UserDetails {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
@@ -24,6 +32,8 @@ public class User implements UserDetails {
 	private Sale seller;
 	@OneToOne(mappedBy = "buyer")
 	private Sale buyer;
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Profile> profiles = new ArrayList<>();
 	private LocalDateTime dateCreation = LocalDateTime.now();
 	
 	public Long getId() {
@@ -62,6 +72,12 @@ public class User implements UserDetails {
 	public void setBuyer(Sale buyer) {
 		this.buyer = buyer;
 	}
+	public List<Profile> getProfiles() {
+		return profiles;
+	}
+	public void setProfiles(List<Profile> profiles) {
+		this.profiles = profiles;
+	}
 	public LocalDateTime getDateCreation() {
 		return dateCreation;
 	}
@@ -70,8 +86,7 @@ public class User implements UserDetails {
 	}
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.profiles;
 	}
 	@Override
 	public String getUsername() {

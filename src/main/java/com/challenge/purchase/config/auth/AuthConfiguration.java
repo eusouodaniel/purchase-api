@@ -24,7 +24,8 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/products/*").permitAll()
 		.antMatchers(HttpMethod.GET, "/categories").permitAll()
 		.antMatchers(HttpMethod.GET, "/categories/*").permitAll()
-		.anyRequest().authenticated();
+		.anyRequest().authenticated()
+		.and().formLogin();
 	}
 	
 	@Override
