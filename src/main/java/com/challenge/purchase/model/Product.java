@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
@@ -25,6 +26,9 @@ public class Product {
 	private Category category;
 	@OneToOne(mappedBy = "product")
 	private Sale sale;
+	@ManyToOne()
+    @JoinColumn(name = "seller_id", referencedColumnName = "id")
+	private User seller;
 	private LocalDateTime dateCreation = LocalDateTime.now();
 	
 	
@@ -52,6 +56,14 @@ public class Product {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+	public User getSeller() {
+		return seller;
+	}
+	public void setSeller(User seller) {
+		this.seller = seller;
+	}
+	
 	public LocalDateTime getDateCreation() {
 		return dateCreation;
 	}
