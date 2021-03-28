@@ -3,6 +3,7 @@ package com.challenge.purchase.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,5 +50,13 @@ public class CategoryController {
 	public CategoryDetailsDto show(@PathVariable Long id) {
 		Category category = categoryRepository.getOne(id);
 		return new CategoryDetailsDto(category);
+	}
+	
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody @Valid CategoryForm form) {
+		Category category = form.update(id, categoryRepository);
+		
+		return ResponseEntity.ok(new CategoryDto(category));
 	}
 }
