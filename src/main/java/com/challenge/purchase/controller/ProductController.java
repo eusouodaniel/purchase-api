@@ -24,31 +24,23 @@ import com.challenge.purchase.controller.dto.product.ProductDto;
 import com.challenge.purchase.controller.form.product.ProductEditForm;
 import com.challenge.purchase.controller.form.product.ProductForm;
 import com.challenge.purchase.model.Product;
-import com.challenge.purchase.repository.CategoryRepository;
-import com.challenge.purchase.repository.ProductRepository;
-import com.challenge.purchase.repository.UserRepository;
+import com.challenge.purchase.service.ProductService;
 
 @RestController
 @RequestMapping(value="/products")
 public class ProductController {
 	
 	@Autowired
-	private ProductRepository productRepository;
-	@Autowired
-	private CategoryRepository categoryRepository;
-	@Autowired
-	private UserRepository userRepository;
+	private ProductService productService;
 	
 	@GetMapping
 	public List<ProductDto> index() {
-		List<Product> products = productRepository.findAll();
-		return ProductDto.convert(products);
+		return productService.listAll();
 	}
 	
 	@PostMapping
 	public ResponseEntity<ProductDto> store(@RequestBody @Valid ProductForm form, UriComponentsBuilder uriBuilder) {
-		Product product = form.convert(categoryRepository, userRepository);
-		productRepository.save(product);
+		Product product = productService.create(form);
 		
 		URI uri = uriBuilder.path("/products/{id}").buildAndExpand(product.getId()).toUri();
 		
@@ -57,7 +49,7 @@ public class ProductController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ProductDetailsDto> show(@PathVariable Long id) {
-		Optional<Product> product = productRepository.findById(id);
+		Optional<Product> product = productService.getProduct(id);
 		if (product.isPresent()) {
 			return ResponseEntity.ok(new ProductDetailsDto(product.get()));
 		}
@@ -68,9 +60,9 @@ public class ProductController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ProductDto> update(@PathVariable Long id, @RequestBody @Valid ProductEditForm form) {
-		Optional<Product> productOptional = productRepository.findById(id);
+		Optional<Product> productOptional = productService.getProduct(id);
 		if (productOptional.isPresent()) {
-			Product product = form.update(id, productRepository, categoryRepository);
+			Product product = productService.update(id, form);
 			return ResponseEntity.ok(new ProductDto(product));
 		}
 		
@@ -79,9 +71,9 @@ public class ProductController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Optional<Product> product = productRepository.findById(id);
+		Optional<Product> product = productService.getProduct(id);
 		if (product.isPresent()) {
-			productRepository.deleteById(id);
+			productService.delete(id);
 			return ResponseEntity.ok().build();
 		}
 		
