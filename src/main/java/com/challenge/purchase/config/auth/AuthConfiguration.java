@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.challenge.purchase.config.middleware.TokenFilterMiddleware;
-import com.challenge.purchase.repository.UserRepository;
 import com.challenge.purchase.service.AuthSecurityService;
 import com.challenge.purchase.service.TokenService;
 
