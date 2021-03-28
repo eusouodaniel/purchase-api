@@ -12,12 +12,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.challenge.purchase.config.middleware.TokenFilterMiddleware;
+import com.challenge.purchase.repository.UserRepository;
 import com.challenge.purchase.service.AuthSecurityService;
+import com.challenge.purchase.service.TokenService;
 
 @EnableWebSecurity
 @Configuration
 public class AuthConfiguration extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	private TokenService tokenService;
 	
 	@Autowired
 	private AuthSecurityService authSecurityService;
@@ -43,7 +50,8 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.POST, "/auth").permitAll()
 		.anyRequest().authenticated()
 		.and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and().addFilterBefore(new TokenFilterMiddleware(tokenService), UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	@Override
