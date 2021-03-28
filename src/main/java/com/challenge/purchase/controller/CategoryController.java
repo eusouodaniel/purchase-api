@@ -23,25 +23,23 @@ import com.challenge.purchase.controller.dto.category.CategoryDetailsDto;
 import com.challenge.purchase.controller.dto.category.CategoryDto;
 import com.challenge.purchase.controller.form.category.CategoryForm;
 import com.challenge.purchase.model.Category;
-import com.challenge.purchase.repository.CategoryRepository;
+import com.challenge.purchase.service.CategoryService;
 
 @RestController
 @RequestMapping(value="/categories")
 public class CategoryController {
 	
 	@Autowired
-	private CategoryRepository categoryRepository;
+	private CategoryService categoryService;
 	
 	@GetMapping
 	public List<CategoryDto> index() {
-		List<Category> categories = categoryRepository.findAll();
-		return CategoryDto.convert(categories);
+		return categoryService.listAll();
 	}
 	
 	@PostMapping
 	public ResponseEntity<CategoryDto> store(@RequestBody @Valid CategoryForm form, UriComponentsBuilder uriBuilder) {
-		Category category = form.convert();
-		categoryRepository.save(category);
+		Category category = categoryService.create(form);
 		
 		URI uri = uriBuilder.path("/categories/{id}").buildAndExpand(category.getId()).toUri();
 		
@@ -50,7 +48,7 @@ public class CategoryController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<CategoryDetailsDto> show(@PathVariable Long id) {
-		Optional<Category> category = categoryRepository.findById(id);
+		Optional<Category> category = categoryService.getCategory(id);
 		if (category.isPresent()) {
 			return ResponseEntity.ok(new CategoryDetailsDto(category.get()));
 		}
@@ -61,9 +59,9 @@ public class CategoryController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody @Valid CategoryForm form) {
-		Optional<Category> categoryOptional = categoryRepository.findById(id);
+		Optional<Category> categoryOptional = categoryService.getCategory(id);
 		if (categoryOptional.isPresent()) {
-			Category category = form.update(id, categoryRepository);
+			Category category = categoryService.update(id, form);
 			return ResponseEntity.ok(new CategoryDto(category));
 		}
 		
@@ -72,9 +70,9 @@ public class CategoryController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Optional<Category> category = categoryRepository.findById(id);
+		Optional<Category> category = categoryService.getCategory(id);
 		if (category.isPresent()) {
-			categoryRepository.deleteById(id);
+			categoryService.delete(id);
 			return ResponseEntity.ok().build();
 		}
 		
