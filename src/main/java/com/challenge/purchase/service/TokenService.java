@@ -12,7 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
-public class TokenService {
+public class TokenService  implements BaseService {
 	
 	@Value("${purchase.jwt.secret}")
 	private String secret;
@@ -34,7 +34,7 @@ public class TokenService {
 	
 	private Date generateExpiration() {
 		Date today = new Date();
-		return new Date(today + expiration);
+		return new Date(today.getTime() + Long.parseLong(expiration));
 	}
 
 }

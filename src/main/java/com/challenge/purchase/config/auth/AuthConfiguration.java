@@ -11,20 +11,26 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.challenge.purchase.service.AuthSecurityService;
 
 @EnableWebSecurity
 @Configuration
 public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
+	private AuthSecurityService authSecurityService;
+	
+	@Autowired
 	@Bean
-	protected AuthenticationManager authenticationManager() throws Exception {
-		return super.authenticationManager();
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 	
 	@Override
 	protected void configure (AuthenticationManagerBuilder auth) throws Exception {
-		
+		auth.userDetailsService(authSecurityService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 	
 	@Override
@@ -34,6 +40,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/products/*").permitAll()
 		.antMatchers(HttpMethod.GET, "/categories").permitAll()
 		.antMatchers(HttpMethod.GET, "/categories/*").permitAll()
+		.antMatchers(HttpMethod.POST, "/auth").permitAll()
 		.anyRequest().authenticated()
 		.and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
