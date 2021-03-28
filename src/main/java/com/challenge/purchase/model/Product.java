@@ -31,6 +31,17 @@ public class Product {
 	private User seller;
 	private LocalDateTime dateCreation = LocalDateTime.now();
 	
+	public Product() {
+		
+	}
+	
+	public Product(String name, String description, Category category, User seller) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.category = category;
+		this.seller = seller;
+	}
 	
 	public Long getId() {
 		return id;
