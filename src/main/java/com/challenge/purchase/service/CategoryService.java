@@ -36,7 +36,7 @@ public class CategoryService implements BaseService {
 	}
 	
 	public Optional<Category> getCategory(Long id) {
-		logger.info("Get category");
+		logger.info("Get category - ID: {} - Date: {}", id, LocalDateTime.now());
 		
 		return categoryRepository.findById(id);
 	}
@@ -51,6 +51,7 @@ public class CategoryService implements BaseService {
 	
 	public void delete(Long id) {
 		categoryRepository.deleteById(id);
+		
 		logger.info("Category has deleted - ID: {} - Date: {}", id, LocalDateTime.now());
 	}
 }
