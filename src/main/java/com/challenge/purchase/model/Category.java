@@ -1,12 +1,14 @@
 package com.challenge.purchase.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Category {
@@ -14,8 +16,8 @@ public class Category {
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
-	@OneToOne(mappedBy = "category")
-	private Product product;
+	@OneToMany(mappedBy = "category")
+	private List<Product> products = new ArrayList<>();
 	private LocalDateTime dateCreation = LocalDateTime.now();
 	
 	public Category() {
@@ -41,13 +43,15 @@ public class Category {
 		this.name = name;
 	}
 
-	public Product getProduct() {
-		return product;
+	
+	public List<Product> getProducts() {
+		return products;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
+
 	public LocalDateTime getDateCreation() {
 		return dateCreation;
 	}

@@ -1,9 +1,10 @@
-package com.challenge.purchase.controller.form;
+package com.challenge.purchase.controller.form.category;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.challenge.purchase.model.Category;
+import com.challenge.purchase.repository.CategoryRepository;
 
 
 public class CategoryForm {
@@ -21,6 +22,13 @@ public class CategoryForm {
 
 	public Category convert() {
 		return new Category(name);
+	}
+
+	public Category update(Long id, CategoryRepository categoryRepository) {
+		Category category = categoryRepository.getOne(id);
+		category.setName(this.name);
+		
+		return category;
 	}
 	
 	

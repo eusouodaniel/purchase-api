@@ -1,4 +1,4 @@
-package com.challenge.purchase.controller.dto;
+package com.challenge.purchase.controller.dto.category;
 
 import java.util.List;
 import java.util.stream.Collectors;
