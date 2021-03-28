@@ -1,30 +1,28 @@
-package com.challenge.purchase.controller.dto;
+package com.challenge.purchase.controller.dto.product;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.challenge.purchase.controller.dto.category.CategoryDto;
 import com.challenge.purchase.model.Product;
 
-public class ProductDto {
+public class ProductDetailsDto {
+	
 	private Long id;
 	private String name;
 	private String description;
-	private Long categoryId;
-	private LocalDateTime dateCreation = LocalDateTime.now();
+	private CategoryDto category;
 	
-	public ProductDto(Product product) {
+	public ProductDetailsDto(Product product) {
 		this.id = product.getId();
 		this.name = product.getName();
-		this.categoryId = product.getCategory().getId();
 		this.description = product.getDescription();
-		this.dateCreation = product.getDateCreation();
+		this.category = new CategoryDto(product.getCategory());
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
-
 	public String getName() {
 		return name;
 	}
@@ -32,20 +30,13 @@ public class ProductDto {
 	public String getDescription() {
 		return description;
 	}
-	
-	public Long getCategoryId() {
-		return categoryId;
-	}
 
-	public void setCategoryId(Long categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public LocalDateTime getDateCreation() {
-		return dateCreation;
+	public CategoryDto getCategory() {
+		return category;
 	}
 
 	public static List<ProductDto> convert(List<Product> products) {
 		return products.stream().map(ProductDto::new).collect(Collectors.toList());
 	}
+	
 }

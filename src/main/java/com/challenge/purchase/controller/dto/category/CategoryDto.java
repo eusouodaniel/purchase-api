@@ -1,22 +1,18 @@
-package com.challenge.purchase.controller.dto;
+package com.challenge.purchase.controller.dto.category;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.challenge.purchase.model.Category;
 
-public class CategoryDetailsDto {
+public class CategoryDto {
 	
 	private Long id;
 	private String name;
-	private List<ProductDto> products;
 	
-	public CategoryDetailsDto(Category category) {
+	public CategoryDto(Category category) {
 		this.id = category.getId();
 		this.name = category.getName();
-		this.products = new ArrayList<>();
-		this.products.addAll(category.getProducts().stream().map(ProductDto::new).collect(Collectors.toList()));
 	}
 	
 	public Long getId() {
@@ -24,10 +20,6 @@ public class CategoryDetailsDto {
 	}
 	public String getName() {
 		return name;
-	}
-
-	public List<ProductDto> getProducts() {
-		return products;
 	}
 
 	public static List<CategoryDto> convert(List<Category> categories) {

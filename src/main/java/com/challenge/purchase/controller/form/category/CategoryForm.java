@@ -1,4 +1,4 @@
-package com.challenge.purchase.controller.form;
+package com.challenge.purchase.controller.form.category;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

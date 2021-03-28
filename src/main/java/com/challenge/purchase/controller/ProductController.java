@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.challenge.purchase.controller.dto.ProductDetailsDto;
-import com.challenge.purchase.controller.dto.ProductDto;
-import com.challenge.purchase.controller.form.ProductEditForm;
-import com.challenge.purchase.controller.form.ProductForm;
+import com.challenge.purchase.controller.dto.product.ProductDetailsDto;
+import com.challenge.purchase.controller.dto.product.ProductDto;
+import com.challenge.purchase.controller.form.product.ProductEditForm;
+import com.challenge.purchase.controller.form.product.ProductForm;
 import com.challenge.purchase.model.Product;
 import com.challenge.purchase.repository.CategoryRepository;
 import com.challenge.purchase.repository.ProductRepository;
