@@ -2,6 +2,7 @@ package com.challenge.purchase.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -48,23 +49,35 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/{id}")
-	public CategoryDetailsDto show(@PathVariable Long id) {
-		Category category = categoryRepository.getOne(id);
-		return new CategoryDetailsDto(category);
+	public ResponseEntity<CategoryDetailsDto> show(@PathVariable Long id) {
+		Optional<Category> category = categoryRepository.findById(id);
+		if (category.isPresent()) {
+			return ResponseEntity.ok(new CategoryDetailsDto(category.get()));
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody @Valid CategoryForm form) {
-		Category category = form.update(id, categoryRepository);
+		Optional<Category> categoryOptional = categoryRepository.findById(id);
+		if (categoryOptional.isPresent()) {
+			Category category = form.update(id, categoryRepository);
+			return ResponseEntity.ok(new CategoryDto(category));
+		}
 		
-		return ResponseEntity.ok(new CategoryDto(category));
+		return ResponseEntity.notFound().build();
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		categoryRepository.deleteById(id);
+		Optional<Category> category = categoryRepository.findById(id);
+		if (category.isPresent()) {
+			categoryRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.notFound().build();
 	}
 }
