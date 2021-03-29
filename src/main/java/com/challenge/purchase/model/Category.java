@@ -18,6 +18,8 @@ public class Category {
 	private String name;
 	@OneToMany(mappedBy = "category")
 	private List<Product> products = new ArrayList<>();
+	@OneToMany(mappedBy = "category")
+	private List<News> news = new ArrayList<>();
 	private LocalDateTime dateCreation = LocalDateTime.now();
 	
 	public Category() {
@@ -28,7 +30,6 @@ public class Category {
 		super();
 		this.name = name;
 	}
-	
 	
 	public Long getId() {
 		return id;
@@ -42,7 +43,6 @@ public class Category {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	
 	public List<Product> getProducts() {
 		return products;
@@ -50,6 +50,14 @@ public class Category {
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+	
+	public List<News> getNews() {
+		return news;
+	}
+
+	public void setNews(List<News> news) {
+		this.news = news;
 	}
 
 	public LocalDateTime getDateCreation() {
