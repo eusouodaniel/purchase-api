@@ -1,106 +1,109 @@
-package com.challenge.purchase.model;
+package com.challenge.purchase.controller.form.news;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-@Entity
-public class News {
+import com.challenge.purchase.model.Category;
+import com.challenge.purchase.model.News;
+import com.challenge.purchase.repository.CategoryRepository;
+
+
+public class NewsForm {
 	
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	private Long Id;
+	@NotNull @NotEmpty
 	private String sourceName;
+	@NotNull @NotEmpty
 	private String author;
+	@NotNull @NotEmpty
 	private String title;
+	@NotNull @NotEmpty
 	private String description;
+	@NotNull @NotEmpty
 	private String url;
+	@NotNull @NotEmpty
 	private String urlToImage;
+	@NotNull @NotEmpty
 	private String publishedAt;
+	@NotNull @NotEmpty
 	private String content;
-	@OneToOne
-    @JoinTable(name = "news_category", 
-      joinColumns = 
-        { @JoinColumn(name = "news_id", referencedColumnName = "id") },
-      inverseJoinColumns = 
-        { @JoinColumn(name = "category_id", referencedColumnName = "id") })
-	private Category category;
-	
-	public News() {
-		
-	}
-	
-	public News(String sourceName, String author, String title, String description, String url,
-			String urlToImage, String publishedAt, String content, Category category) {
-		super();
-		this.sourceName = sourceName;
-		this.author = author;
-		this.title = title;
-		this.description = description;
-		this.url = url;
-		this.urlToImage = urlToImage;
-		this.publishedAt = publishedAt;
-		this.content = content;
-		this.category = category;
-	}
+	@NotNull @NotEmpty
+	private Long categoryId;
 
-	public Long getId() {
-		return Id;
-	}
-	public void setId(Long id) {
-		Id = id;
-	}
 	public String getSourceName() {
 		return sourceName;
 	}
+
 	public void setSourceName(String sourceName) {
 		this.sourceName = sourceName;
 	}
+
 	public String getAuthor() {
 		return author;
 	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getUrl() {
 		return url;
 	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	public String getUrlToImage() {
 		return urlToImage;
 	}
+
 	public void setUrlToImage(String urlToImage) {
 		this.urlToImage = urlToImage;
 	}
+
 	public String getPublishedAt() {
 		return publishedAt;
 	}
+
 	public void setPublishedAt(String publishedAt) {
 		this.publishedAt = publishedAt;
 	}
+
 	public String getContent() {
 		return content;
 	}
+
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-	
+
+	public Long getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public News convert(CategoryRepository categoryRepository) {
+		Category category = categoryRepository.getOne(categoryId);
+		
+		return new News(sourceName, author, title, description, url, urlToImage, publishedAt, content, category);
+	}
 }
