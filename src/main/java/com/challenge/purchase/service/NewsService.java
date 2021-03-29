@@ -18,6 +18,7 @@ import com.challenge.purchase.repository.CategoryRepository;
 import com.challenge.purchase.repository.NewsRepository;
 
 import io.github.ccincharge.newsapi.NewsApi;
+import io.github.ccincharge.newsapi.datamodels.Article;
 import io.github.ccincharge.newsapi.requests.RequestBuilder;
 import io.github.ccincharge.newsapi.responses.ApiArticlesResponse;
 
@@ -29,7 +30,7 @@ public class NewsService implements BaseService {
 	@Value("${purchase.news-api.key}")
 	private String key;
 	
-	private static final long TIME_DELAY = 21600000;
+	private static final long TIME_DELAY = 1000;
 	
 	@Autowired
 	CategoryService categoryService;
@@ -48,12 +49,14 @@ public class NewsService implements BaseService {
 			RequestBuilder requestBuilder = this.getNewsByApi(category.getName());
 			ApiArticlesResponse responseNews = this.sendRequest(requestBuilder);
 			
-			Optional<News> news = newsRepository.findByTitle(responseNews.articles().get(0).title());
-			
-			if (news.isEmpty()) {
-				NewsForm form = this.mountForm(responseNews, category.getId());
-				this.create(form);
-			}
+			responseNews.articles().forEach(article -> {
+				Optional<News> news = newsRepository.findByTitle(article.title());
+				
+				if (news.isEmpty()) {
+					NewsForm form = this.mountForm(article, category.getId());
+					this.create(form);
+				}
+			});
 		});
 	}
 	
@@ -76,16 +79,16 @@ public class NewsService implements BaseService {
 		return new NewsApi(key);
 	}
 	
-	private NewsForm mountForm(ApiArticlesResponse responseNews, Long categoryId) {
+	private NewsForm mountForm(Article article, Long categoryId) {
 		NewsForm form = new NewsForm();
 		
-		form.setSourceName(responseNews.articles().get(0).source().name());
-		form.setAuthor(responseNews.articles().get(0).author());
-		form.setTitle(responseNews.articles().get(0).title());
-		form.setDescription(responseNews.articles().get(0).description());
-		form.setUrl(responseNews.articles().get(0).description());
-		form.setUrlToImage(responseNews.articles().get(0).urlToImage());
-		form.setPublishedAt(responseNews.articles().get(0).publishedAt());
+		form.setSourceName(article.source().name());
+		form.setAuthor(article.author());
+		form.setTitle(article.title());
+		form.setDescription(article.description().substring(0, 30)+"...");
+		form.setUrl(article.url());
+		form.setUrlToImage(article.urlToImage());
+		form.setPublishedAt(article.publishedAt());
 		form.setCategoryId(categoryId);
 		
 		return form;
