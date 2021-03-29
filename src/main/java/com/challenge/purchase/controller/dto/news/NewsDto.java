@@ -10,13 +10,13 @@ public class NewsDto {
 	private Long id;
 	private String author;
 	private String description;
-	private String sourceName;
+	private String url;
 	
 	public NewsDto(News news) {
 		this.id = news.getId();
 		this.author = news.getAuthor();
 		this.description = news.getDescription();
-		this.sourceName = news.getSourceName();
+		this.url = news.getUrl();
 	}
 
 	public Long getId() {
@@ -31,8 +31,8 @@ public class NewsDto {
 		return description;
 	}
 
-	public String getSourceName() {
-		return sourceName;
+	public String getUrl() {
+		return url;
 	}
 
 	public static List<NewsDto> convert(List<News> news) {
