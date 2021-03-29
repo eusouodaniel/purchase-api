@@ -1,4 +1,4 @@
-package com.challenge.purchase.dto.auth;
+package com.challenge.purchase.controller.dto.auth;
 
 public class TokenDto {
 	
