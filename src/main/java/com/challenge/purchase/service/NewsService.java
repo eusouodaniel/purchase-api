@@ -1,5 +1,6 @@
 package com.challenge.purchase.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +24,12 @@ import io.github.ccincharge.newsapi.responses.ApiArticlesResponse;
 @Service
 @Configuration
 @EnableScheduling
-public class NewsService {
+public class NewsService implements BaseService {
 	
 	@Value("${purchase.news-api.key}")
 	private String key;
 	
-	private static final long TIME_DELAY = 1000;
+	private static final long TIME_DELAY = 21600000;
 	
 	@Autowired
 	CategoryService categoryService;
@@ -92,8 +93,9 @@ public class NewsService {
 	
 	private News create(NewsForm form) {
 		News news = form.convert(categoryRepository);
-		
 		newsRepository.save(news);
+		
+		logger.info("Insertion news - ID: {} - Date: {}", news.getId(), LocalDateTime.now());
 		
 		return news;
 	}
