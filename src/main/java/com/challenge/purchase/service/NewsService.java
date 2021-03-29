@@ -1,6 +1,7 @@
 package com.challenge.purchase.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +47,12 @@ public class NewsService {
 			RequestBuilder requestBuilder = this.getNewsByApi(category.getName());
 			ApiArticlesResponse responseNews = this.sendRequest(requestBuilder);
 			
-			NewsForm form = this.mountForm(responseNews, category.getId());
-			this.create(form);
+			Optional<News> news = newsRepository.findByTitle(responseNews.articles().get(0).title());
+			
+			if (news.isEmpty()) {
+				NewsForm form = this.mountForm(responseNews, category.getId());
+				this.create(form);
+			}
 		});
 	}
 	
