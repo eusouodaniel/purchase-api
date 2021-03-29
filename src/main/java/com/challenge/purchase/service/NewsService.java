@@ -32,7 +32,7 @@ public class NewsService implements BaseService {
 	@Value("${purchase.news-api.key}")
 	private String key;
 	
-	private static final long TIME_DELAY = 1000;
+	private static final long TIME_DELAY = 21600000;
 	
 	@Autowired
 	CategoryService categoryService;
