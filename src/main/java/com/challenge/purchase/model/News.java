@@ -20,7 +20,6 @@ public class News {
 	private String url;
 	private String urlToImage;
 	private String publishedAt;
-	private String content;
 	@OneToOne
     @JoinTable(name = "news_category", 
       joinColumns = 
@@ -34,7 +33,7 @@ public class News {
 	}
 	
 	public News(String sourceName, String author, String title, String description, String url,
-			String urlToImage, String publishedAt, String content, Category category) {
+			String urlToImage, String publishedAt, Category category) {
 		super();
 		this.sourceName = sourceName;
 		this.author = author;
@@ -43,7 +42,6 @@ public class News {
 		this.url = url;
 		this.urlToImage = urlToImage;
 		this.publishedAt = publishedAt;
-		this.content = content;
 		this.category = category;
 	}
 
@@ -95,12 +93,5 @@ public class News {
 	public void setPublishedAt(String publishedAt) {
 		this.publishedAt = publishedAt;
 	}
-	public String getContent() {
-		return content;
-	}
-	public void setContent(String content) {
-		this.content = content;
-	}
-	
 	
 }

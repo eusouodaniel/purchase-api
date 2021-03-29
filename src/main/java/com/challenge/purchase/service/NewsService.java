@@ -27,6 +27,8 @@ public class NewsService {
 	@Value("${purchase.news-api.key}")
 	private String key;
 	
+	private static final long TIME_DELAY = 1000;
+	
 	@Autowired
 	CategoryService categoryService;
 	
@@ -36,7 +38,7 @@ public class NewsService {
 	@Autowired
 	NewsRepository newsRepository;
 	
-	@Scheduled(fixedDelay = 2000)
+	@Scheduled(fixedDelay = TIME_DELAY)
 	public void getNews() {
 		List<CategoryDto> categories = this.getAllCategories();
 

@@ -25,8 +25,6 @@ public class NewsForm {
 	@NotNull @NotEmpty
 	private String publishedAt;
 	@NotNull @NotEmpty
-	private String content;
-	@NotNull @NotEmpty
 	private Long categoryId;
 
 	public String getSourceName() {
@@ -85,14 +83,6 @@ public class NewsForm {
 		this.publishedAt = publishedAt;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
 	public Long getCategoryId() {
 		return categoryId;
 	}
@@ -104,6 +94,6 @@ public class NewsForm {
 	public News convert(CategoryRepository categoryRepository) {
 		Category category = categoryRepository.getOne(categoryId);
 		
-		return new News(sourceName, author, title, description, url, urlToImage, publishedAt, content, category);
+		return new News(sourceName, author, title, description, url, urlToImage, publishedAt, category);
 	}
 }
