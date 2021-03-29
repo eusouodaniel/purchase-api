@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -42,6 +44,7 @@ public class NewsService implements BaseService {
 	NewsRepository newsRepository;
 	
 	@Scheduled(fixedDelay = TIME_DELAY)
+	@Cacheable(value = "listNews")
 	public void getNews() {
 		List<CategoryDto> categories = this.getAllCategories();
 
@@ -94,6 +97,7 @@ public class NewsService implements BaseService {
 		return form;
 	}
 	
+	@CacheEvict(value = "listNews")
 	private News create(NewsForm form) {
 		News news = form.convert(categoryRepository);
 		newsRepository.save(news);
