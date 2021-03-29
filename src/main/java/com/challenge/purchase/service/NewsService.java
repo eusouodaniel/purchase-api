@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.challenge.purchase.controller.dto.category.CategoryDto;
@@ -17,6 +20,8 @@ import io.github.ccincharge.newsapi.requests.RequestBuilder;
 import io.github.ccincharge.newsapi.responses.ApiArticlesResponse;
 
 @Service
+@Configuration
+@EnableScheduling
 public class NewsService {
 	
 	@Value("${purchase.news-api.key}")
@@ -31,34 +36,59 @@ public class NewsService {
 	@Autowired
 	NewsRepository newsRepository;
 	
+	@Scheduled(fixedDelay = 2000)
 	public void getNews() {
-		NewsApi newsApi = new NewsApi(key);
-		
-		List<CategoryDto> categories = categoryService.listAll();
+		List<CategoryDto> categories = this.getAllCategories();
 
 		categories.forEach(category -> {
-			RequestBuilder bitcoinRequest = new RequestBuilder()
-				    .setQ(category.getName())
-				    .setLanguage("pt");
-
-			ApiArticlesResponse apiArti = newsApi.sendEverythingRequest(bitcoinRequest);
+			RequestBuilder requestBuilder = this.getNewsByApi(category.getName());
+			ApiArticlesResponse responseNews = this.sendRequest(requestBuilder);
 			
-			NewsForm form = new NewsForm();
-			
-			form.setSourceName(apiArti.articles().get(0).source().name());
-			form.setAuthor(apiArti.articles().get(0).author());
-			form.setTitle(apiArti.articles().get(0).title());
-			form.setDescription(apiArti.articles().get(0).description());
-			form.setUrl(apiArti.articles().get(0).description());
-			form.setUrlToImage(apiArti.articles().get(0).urlToImage());
-			form.setPublishedAt(apiArti.articles().get(0).publishedAt());
-			form.setCategoryId(category.getId());
-			
-			News news = form.convert(categoryRepository);
-			
-			newsRepository.save(news);
+			NewsForm form = this.mountForm(responseNews, category.getId());
+			this.create(form);
 		});
 	}
-
+	
+	private List<CategoryDto> getAllCategories() {
+		return categoryService.listAll();
+	}
+	
+	private RequestBuilder getNewsByApi(String categoryName) {
+		return new RequestBuilder()
+			    .setQ(categoryName)
+			    .setLanguage("pt");
+	}
+	
+	private ApiArticlesResponse sendRequest(RequestBuilder requestBuilder) {
+		NewsApi newsApi = this.connectNewsApi();
+		return newsApi.sendEverythingRequest(requestBuilder);
+	}
+	
+	private NewsApi connectNewsApi() {
+		return new NewsApi(key);
+	}
+	
+	private NewsForm mountForm(ApiArticlesResponse responseNews, Long categoryId) {
+		NewsForm form = new NewsForm();
+		
+		form.setSourceName(responseNews.articles().get(0).source().name());
+		form.setAuthor(responseNews.articles().get(0).author());
+		form.setTitle(responseNews.articles().get(0).title());
+		form.setDescription(responseNews.articles().get(0).description());
+		form.setUrl(responseNews.articles().get(0).description());
+		form.setUrlToImage(responseNews.articles().get(0).urlToImage());
+		form.setPublishedAt(responseNews.articles().get(0).publishedAt());
+		form.setCategoryId(categoryId);
+		
+		return form;
+	}
+	
+	private News create(NewsForm form) {
+		News news = form.convert(categoryRepository);
+		
+		newsRepository.save(news);
+		
+		return news;
+	}
 }
 

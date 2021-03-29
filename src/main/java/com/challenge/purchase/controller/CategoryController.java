@@ -26,7 +26,6 @@ import com.challenge.purchase.controller.dto.category.CategoryDto;
 import com.challenge.purchase.controller.form.category.CategoryForm;
 import com.challenge.purchase.model.Category;
 import com.challenge.purchase.service.CategoryService;
-import com.challenge.purchase.service.NewsService;
 
 @RestController
 @RequestMapping(value="/categories")
@@ -34,20 +33,12 @@ public class CategoryController {
 	
 	@Autowired
 	private CategoryService categoryService;
-	@Autowired
-	private NewsService newsService;
 	
 	@GetMapping
 	@Cacheable(value = "listCategories")
 	public List<CategoryDto> index() {
 		return categoryService.listAll();
 	}
-	
-	@GetMapping("/news")
-	public void testNews() {
-		newsService.getNews();
-	}
-	
 	
 	@PostMapping
 	@CacheEvict(value = "listCategories")
