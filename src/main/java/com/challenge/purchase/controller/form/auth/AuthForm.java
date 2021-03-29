@@ -1,4 +1,4 @@
-package com.challenge.purchase.form.auth;
+package com.challenge.purchase.controller.form.auth;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
